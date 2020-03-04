@@ -2,12 +2,13 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
+	"runtime"
 	"time"
 
 	proto "github.com/PieterVoorwinden/micro-http/proto"
 	"github.com/micro/go-micro/v2"
-	"github.com/micro/go-micro/v2/server"
 )
 
 type Greeter struct{}
@@ -18,19 +19,20 @@ func (g *Greeter) Hello(ctx context.Context, req *proto.Request, rsp *proto.Resp
 }
 
 func main() {
-	srv := server.NewServer(
-		server.Name("Greeter"),
-		server.Wait(nil),
-	)
+	go func() {
+		t := time.NewTicker(3 * time.Second)
+		for range t.C {
+			fmt.Println(runtime.NumGoroutine())
+		}
+	}()
 	service := micro.NewService(
-		micro.Name("Greeter"),
-		micro.Server(srv),
+		micro.Name("go.micro.srv.greeter"),
 		micro.RegisterTTL(time.Second*30),
 		micro.RegisterInterval(time.Second*15),
 	)
 	service.Init()
 
-	if err := proto.RegisterGreeterHandler(service.Server(), &Greeter{}); err != nil {
+	if err := proto.RegisterGreeterHandler(service.Server(), new(Greeter)); err != nil {
 		log.Fatal(err)
 	}
 

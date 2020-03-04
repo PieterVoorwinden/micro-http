@@ -7,5 +7,6 @@ replace github.com/micro/go-micro/v2 => github.com/micro/go-micro/v2 v2.2.1-0.20
 
 require (
 	github.com/golang/protobuf v1.3.4
+	github.com/gorilla/mux v1.7.3
 	github.com/micro/go-micro/v2 v2.0.0-00010101000000-000000000000
 )
