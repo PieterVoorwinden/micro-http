@@ -9,6 +9,7 @@ import (
 
 	proto "github.com/PieterVoorwinden/micro-http/proto"
 	"github.com/micro/go-micro/v2"
+	"github.com/micro/go-plugins/registry/consul/v2"
 )
 
 type Greeter struct{}
@@ -29,6 +30,7 @@ func main() {
 		micro.Name("go.micro.srv.greeter"),
 		micro.RegisterTTL(time.Second*30),
 		micro.RegisterInterval(time.Second*15),
+		micro.Registry(consul.NewRegistry()),
 	)
 	service.Init()
 

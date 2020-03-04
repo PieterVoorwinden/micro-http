@@ -11,6 +11,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/micro/go-micro/v2/client"
 	"github.com/micro/go-micro/v2/web"
+	"github.com/micro/go-plugins/registry/consul/v2"
 )
 
 type Handler struct {
@@ -18,17 +19,16 @@ type Handler struct {
 }
 
 func (h *Handler) Greeter(w http.ResponseWriter, r *http.Request) {
-	fmt.Println(runtime.NumGoroutine())
-	log.Println("Got request")
-	rsp, err := h.c.Hello(r.Context(), &proto.Request{
+	before := runtime.NumGoroutine()
+	_, err := h.c.Hello(r.Context(), &proto.Request{
 		Name: "Pieter",
 	})
 	if err != nil {
 		log.Fatal(err)
 	}
+	after := runtime.NumGoroutine()
 	w.WriteHeader(200)
-	w.Write([]byte(rsp.Msg))
-	fmt.Println(runtime.NumGoroutine())
+	w.Write([]byte(fmt.Sprintf("%d and after %d", before, after)))
 }
 
 func main() {
@@ -36,6 +36,7 @@ func main() {
 		web.Name("go.micro.api.greeter"),
 		web.RegisterTTL(time.Second*30),
 		web.RegisterInterval(time.Second*15),
+		web.Registry(consul.NewRegistry()),
 	)
 	service.Init()
 

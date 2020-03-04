@@ -1,0 +1,15 @@
+version: "3"
+services:
+  consul:
+    image: consul:latest
+    restart: always
+    command:
+      - agent
+      - -client=0.0.0.0
+      - -datacenter=ams1
+      - -dev
+      - -log-level=err
+    expose:
+      - 8500
+    ports:
+      - 8500:8500
