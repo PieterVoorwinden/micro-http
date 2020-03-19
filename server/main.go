@@ -2,9 +2,7 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
-	"runtime"
 	"time"
 
 	proto "github.com/PieterVoorwinden/micro-http/proto"
@@ -20,12 +18,6 @@ func (g *Greeter) Hello(ctx context.Context, req *proto.Request, rsp *proto.Resp
 }
 
 func main() {
-	go func() {
-		t := time.NewTicker(3 * time.Second)
-		for range t.C {
-			fmt.Println(runtime.NumGoroutine())
-		}
-	}()
 	service := micro.NewService(
 		micro.Name("go.micro.srv.greeter"),
 		micro.RegisterTTL(time.Second*30),
